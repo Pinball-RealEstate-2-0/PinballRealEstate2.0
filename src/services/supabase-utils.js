@@ -48,11 +48,9 @@ export async function createProfile({ username }, user_id) {
 
 export async function createFilter({ zip_code, low_price, high_price }, user_id) {
   const profile = await getProfileByID(user_id);
-  console.log('profile', profile);
   const { body } = await client
     .from('filters')
     .insert({ zip_code, low_price, high_price, profile_id: profile.id });
-  console.log(body, 'filters body');
   return body;
 }
 
