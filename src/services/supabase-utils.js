@@ -38,12 +38,16 @@ export async function getProfileByID(id){
 }
 
 export async function getFilters() {
-  const { body } = await client
-    .from('filters')
-    .select('*')
-    .single();
+  try {
 
-  return body;
+    const { body } = await client
+      .from('filters')
+      .select('*')
+      .single();    
+    return body;
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 export async function createProfile({ username }) {
@@ -58,7 +62,7 @@ export async function createFilter({ zip_code, low_price, high_price }){
   const { body } = await client
     .from('filters')
     .insert({ zip_code, low_price, high_price });
-
+  console.log(body, 'filters body');
   return body;
 }
 
@@ -67,8 +71,8 @@ export async function updateFilter({ zip_code, low_price, high_price, id }){
     .from('filters')
     .update({ zip_code, low_price, high_price })
     .match({ id });
-
   return body;
+
 }
 export async function updateProfile({ username, id }){
   const { body } = await client

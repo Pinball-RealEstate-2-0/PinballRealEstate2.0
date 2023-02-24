@@ -100,6 +100,7 @@ export default function Search() {
   async function getInfoOnLoad() {
     async function getUserPrefs(){
       const filterResponse = await getFilters();
+      console.log('filters', filterResponse);
       setUserPrefs({
         zip_code: filterResponse.zip_code,
         low_price: filterResponse.low_price,
