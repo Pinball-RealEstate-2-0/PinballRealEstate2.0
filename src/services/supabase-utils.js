@@ -36,6 +36,7 @@ export async function getFilters() {
     const { body } = await client.from('filters').select('*').single();
     return body;
   } catch (e) {
+    // eslint-disable-next-line
     console.log(e);
   }
 }

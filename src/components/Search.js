@@ -14,13 +14,13 @@ export default function Search() {
   const [userPrefs, setUserPrefs] = useState({});
   const [priceRange, setPriceRange] = useState({
     low_price: userPrefs.low_price,
-    high_price: userPrefs.high_price
+    high_price: userPrefs.high_price,
   });
   const [zipCodeData, setZipCodeData] = useState({
     lat: 0,
     lon: 0,
     city: '',
-    state_code: ''
+    state_code: '',
   });
   const [zipCodeInForm, setZipCodeInForm] = useState(0);
   const [homes, setHomes] = useState([]);
@@ -56,9 +56,8 @@ export default function Search() {
       breakpoint: { max: 650, min: 0 },
       items: 1,
       slidesToSlide: 1,
-    }
+    },
   };
-
 
   //function get saved homes by the user so that previously saved homes show differently than non saved
   async function getSavedHomes() {
@@ -73,39 +72,41 @@ export default function Search() {
       lat: data.features[0].center[1],
       lon: data.features[0].center[0],
       city: data.features[0].context[0].text,
-      state_code: data.features[0].context[2].short_code.slice(-2)
+      state_code: data.features[0].context[2].short_code.slice(-2),
     });
   }
 
   //handle the submit of the filter form and update the users preferences
   //this also triggers the useEffect that looks up new homes
-  async function handleSubmit(e){
+  async function handleSubmit(e) {
     e.preventDefault();
     setUserPrefs({
-      ...userPrefs, zip_code: Number(zipCodeInForm), high_price: priceRange.high_price, low_price: priceRange.low_price
+      ...userPrefs,
+      zip_code: Number(zipCodeInForm),
+      high_price: priceRange.high_price,
+      low_price: priceRange.low_price,
     });
     if (userPrefs.zip_code > 0) {
       mapZipCode();
     }
     await updateFilter(userPrefs);
   }
-  
+
   //on load of the page get user preferences and saved homes
   useEffect(() => {
     getInfoOnLoad();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //function to grab the user preferences and saved homes on load of the page
   async function getInfoOnLoad() {
-    async function getUserPrefs(){
+    async function getUserPrefs() {
       const filterResponse = await getFilters();
-      console.log('filters', filterResponse);
       setUserPrefs({
         zip_code: filterResponse.zip_code,
         low_price: filterResponse.low_price,
         high_price: filterResponse.high_price,
-        id: filterResponse.id
+        id: filterResponse.id,
       });
     }
     await getUserPrefs();
@@ -114,6 +115,21 @@ export default function Search() {
 
   //get home information anytime userPreference information is changed
   useEffect(() => {
+    //function to get home data based on user passed in preferences
+    async function getHomeData() {
+      setIsLoading(true);
+      const data = await getAllHomes(
+        userPrefs.zip_code,
+        zipCodeData.city,
+        zipCodeData.state_code,
+        userPrefs.high_price,
+        userPrefs.low_price
+      );
+      if (data.home_search) {
+        setHomes(data.home_search.results);
+      }
+      setIsLoading(false);
+    }
     getHomeData();
 
     setZipCodeInForm(userPrefs.zip_code);
@@ -121,60 +137,83 @@ export default function Search() {
     if (userPrefs.zip_code > 0) {
       mapZipCode();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userPrefs]);
 
-  //function to get home data based on user passed in preferences
-  async function getHomeData(){
-    setIsLoading(true);
-    const data = await getAllHomes(userPrefs.zip_code, zipCodeData.city, zipCodeData.state_code, userPrefs.high_price, userPrefs.low_price);
-    if (data.home_search) {
-      setHomes(data.home_search.results);
-    }
-    setIsLoading(false);
-  }
-
   return (
-    <div className='searchPage'>
+    <div className="searchPage">
       <div className="search">
         <form onSubmit={handleSubmit}>
-          <label>Zip Code  <input required type='number' min='00000' max='99999' value={zipCodeInForm} onChange={e => setZipCodeInForm(e.target.value)}></input></label>
-          <label className='flex-row'>List Price  <CustomSlider setPriceRange={setPriceRange} priceRange={priceRange} low_price={userPrefs.low_price} high_price={userPrefs.high_price} /></label>
+          <label>
+            Zip Code{' '}
+            <input
+              required
+              type="number"
+              min="00000"
+              max="99999"
+              value={zipCodeInForm}
+              onChange={(e) => setZipCodeInForm(e.target.value)}
+            ></input>
+          </label>
+          <label className="flex-row">
+            List Price{' '}
+            <CustomSlider
+              setPriceRange={setPriceRange}
+              priceRange={priceRange}
+              low_price={userPrefs.low_price}
+              high_price={userPrefs.high_price}
+            />
+          </label>
           <button>Search</button>
         </form>
       </div>
       {/* added turnary in case homes state is empty */}
-      {homes.length > 0 ? 
+      {homes.length > 0 ? (
         <div>
-          {isLoading ? <Spinner /> :
+          {isLoading ? (
+            <Spinner />
+          ) : (
             <div>
-              <Carousel
-                responsive={responsive}
-                autoPlay={false}
-                autoPlaySpeed={20000}>
-                {homes.map((home, i) => <PropertyCard key={i} 
-                  address={home.location.address.line}
-                  secondary_address={`${home.location.address.city}, ${home.location.address.state} ${home.location.address.postal_code}`}
-                  bed={home.description.beds}
-                  bath={home.description.baths}
-                  sqft={home.description.sqft}
-                  listprice={home.list_price}
-                  image={home.primary_photo.href}
-                  id={home.property_id}
-                  savedHomes={savedHomes} getSavedHomes={getSavedHomes}> </PropertyCard>)}
+              <Carousel responsive={responsive} autoPlay={false} autoPlaySpeed={20000}>
+                {homes.map((home, i) => (
+                  <PropertyCard
+                    key={i}
+                    address={home.location.address.line}
+                    secondary_address={`${home.location.address.city}, ${home.location.address.state} ${home.location.address.postal_code}`}
+                    bed={home.description.beds}
+                    bath={home.description.baths}
+                    sqft={home.description.sqft}
+                    listprice={home.list_price}
+                    image={home.primary_photo.href}
+                    id={home.property_id}
+                    savedHomes={savedHomes}
+                    getSavedHomes={getSavedHomes}
+                  >
+                    {' '}
+                  </PropertyCard>
+                ))}
               </Carousel>
-              {homes.length > 0 && 
-        <Mapbox 
-          homes={homes} 
-          initial_lat={zipCodeData.lat} 
-          initial_lon={zipCodeData.lon}
-          detail={false}/>}
+              {homes.length > 0 && (
+                <Mapbox
+                  homes={homes}
+                  initial_lat={zipCodeData.lat}
+                  initial_lon={zipCodeData.lon}
+                  detail={false}
+                />
+              )}
             </div>
-          }
-        </div> 
+          )}
+        </div>
+      ) : (
         // weird turnery to make sure spinner comes up on page load and no homes comes up when there are no homes
-        : <div className='sorry'>{isLoading && homes.length === 0 ? <Spinner /> : <h1>Oh No! No Homes Found. Try Again</h1>}</div>}
-      
+        <div className="sorry">
+          {isLoading && homes.length === 0 ? (
+            <Spinner />
+          ) : (
+            <h1>Oh No! No Homes Found. Try Again</h1>
+          )}
+        </div>
+      )}
     </div>
   );
 }
