@@ -9,22 +9,28 @@ function ValueText(value) {
 const marks = [
   {
     value: 250000,
-    label: '$250,000'
+    label: '$250,000',
   },
   {
     value: 1500000,
-    label: '$1.5 Mil'
+    label: '$1.5 Mil',
   },
   {
     value: 3000000,
-    label: '$3 Mil'
+    label: '$3 Mil',
   },
 ];
 
 const minDistance = 200000;
 
-export default function CustomSlider({ setSignUpData, signUpData, low_price, high_price, setPriceRange, priceRange }) {
-    
+export default function CustomSlider({
+  setSignUpData,
+  signUpData,
+  low_price,
+  high_price,
+  setPriceRange,
+  priceRange,
+}) {
   const [value2, setValue2] = React.useState([0, 400000]);
 
   const handleChange2 = (event, newValue, activeThumb) => {
@@ -43,23 +49,26 @@ export default function CustomSlider({ setSignUpData, signUpData, low_price, hig
     } else {
       setValue2(newValue);
     }
-    
-    {if (setSignUpData){
-      setSignUpData({
-        ...signUpData,
-        low_price: value2[0],
-        high_price: value2[1]
-      });} else if (setPriceRange){
-      setPriceRange({
-        ...priceRange, 
-        low_price: value2[0],
-        high_price: value2[1],
-      });
-    } }
+
+    {
+      if (setSignUpData) {
+        setSignUpData({
+          ...signUpData,
+          low_price: value2[0],
+          high_price: value2[1],
+        });
+      } else if (setPriceRange) {
+        setPriceRange({
+          ...priceRange,
+          low_price: value2[0],
+          high_price: value2[1],
+        });
+      }
+    }
   };
 
   React.useEffect(() => {
-    if (low_price & high_price){
+    if (low_price & high_price) {
       setValue2([low_price, high_price]);
     }
   }, [high_price, low_price]);
@@ -76,12 +85,24 @@ export default function CustomSlider({ setSignUpData, signUpData, low_price, hig
         min={0}
         max={3000000}
         step={50000}
-        sx={{ color: '#40798c', marginLeft: '10px', padding: '10px', '& .MuiSlider-thumb': {
-          borderRadius: '20px', border: '#40798c 3px solid', color: 'white'
-        }, '& .MuiSlider-valueLabel' :{ fontSize: '25px', color: '#70a9a1', background: '#1f363d' }, '& .MuiSlider-marked' :{ color: '#70a9a1' }, 
-        '& .MuiSlider-markLabel' :{ color: '#cfe0c3', paddingBottom: '10px', fontWeight: 'bolder' },
-        '& .MuiSlider-rail' :{ color: '#40798c', height: '6px', opacity: '0.67' },
-        '& .MuiSlider-track' :{ color: '#70a9a1', height: '6px', opacity: '0.67' }
+        sx={{
+          color: '#40798c',
+          marginLeft: '10px',
+          padding: '10px',
+          '& .MuiSlider-thumb': {
+            borderRadius: '20px',
+            border: '#40798c 3px solid',
+            color: 'white',
+          },
+          '& .MuiSlider-valueLabel': { fontSize: '25px', color: '#70a9a1', background: '#1f363d' },
+          '& .MuiSlider-marked': { color: '#70a9a1' },
+          '& .MuiSlider-markLabel': {
+            color: '#cfe0c3',
+            paddingBottom: '10px',
+            fontWeight: 'bolder',
+          },
+          '& .MuiSlider-rail': { color: '#40798c', height: '6px', opacity: '0.67' },
+          '& .MuiSlider-track': { color: '#70a9a1', height: '6px', opacity: '0.67' },
         }}
         marks={marks}
       />

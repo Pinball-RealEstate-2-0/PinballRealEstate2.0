@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { getUser, getProfileByID, getFilters, updateFilter, updateProfile, getFavoriteHomes, uploadAvatar } from '../services/supabase-utils';
+import {
+  getUser,
+  getProfileByID,
+  getFilters,
+  updateFilter,
+  updateProfile,
+  getFavoriteHomes,
+} from '../services/supabase-utils';
 import PropertyCard from './PropertyCard';
 import { Avatar } from '@mui/material';
 import Carousel from 'react-multi-carousel';
@@ -9,9 +16,9 @@ import './Profile.css';
 export default function Profile() {
   //State of the user which is set onload with useEffect.
   const [profile, setProfile] = useState({
-    username:'',
-    id:0, 
-    avatar:'',
+    username: '',
+    id: 0,
+    avatar: '',
   });
   //Visibility State for the filter form and the name change form
   const [visibleFilter, setVisibleFilter] = useState(false);
@@ -49,141 +56,159 @@ export default function Profile() {
       breakpoint: { max: 650, min: 0 },
       items: 1,
       slidesToSlide: 1,
-    }
+    },
   };
   //Used to retrieve all of the saved homes in Supabase
-  async function getSavedHomes(){
+  async function getSavedHomes() {
     const savedHomesArray = await getFavoriteHomes();
     setSavedHomes(savedHomesArray);
   }
   //Used to retrieve user profile from Supabase
-  async function getProfileOnLoad(){
+  async function getProfileOnLoad() {
     const userData = await getUser();
     const profileData = await getProfileByID(userData.id);
     const filterData = await getFilters();
-    setProfile(profileData); 
+    setProfile(profileData);
     setFilters({
       zip_code: filterData.zip_code,
       low_price: filterData.low_price,
       high_price: filterData.high_price,
-      id: filterData.id
-    }); 
+      id: filterData.id,
+    });
   }
   //Combines functions into one
-  async function getDataOnLoad(){
+  async function getDataOnLoad() {
     await getSavedHomes();
     await getProfileOnLoad();
   }
-  //Uses above line to retrieve both functions 
+  //Uses above line to retrieve both functions
   useEffect(() => {
     getDataOnLoad();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function handleFilterChange(e){
+  async function handleFilterChange(e) {
     e.preventDefault();
     await updateFilter(filters);
     setVisibleFilter(false);
   }
-  //Allows filter to appear and disappear onclick 
-  function handleFilterVisible(){
-    if (visibleFilter === false){
+  //Allows filter to appear and disappear onclick
+  function handleFilterVisible() {
+    if (visibleFilter === false) {
       setVisibleFilter(true);
     } else {
       setVisibleFilter(false);
     }
   }
-  //Sends info to Supabase to update name change. 
+  //Sends info to Supabase to update name change.
   async function handleProfileChange(e) {
     e.preventDefault();
     await updateProfile(profile);
-    handleUpload(profile.avatar);
+    // handleUpload(profile.avatar);
     setVisibleNameForm(false);
   }
   //Allows name change form to appear and disappear on click
-  function handleEditNameVisible(){
-    if (visibleNameForm === false){
+  function handleEditNameVisible() {
+    if (visibleNameForm === false) {
       setVisibleNameForm(true);
     } else {
       setVisibleNameForm(false);
     }
   }
-  
-  async function handleUpload(){
-    await uploadAvatar(profile.avatar);
-    setVisibleNameForm(false);
-  }
+
+  // async function handleUpload() {
+  //   await uploadAvatar(profile.avatar);
+  //   setVisibleNameForm(false);
+  // }
 
   return (
-    <div className='profile-page'>
-    
-      <div className='profile'>
-        <div className='avatar-username'>
-          <Avatar src={profile.avatar}/>
+    <div className="profile-page">
+      <div className="profile">
+        <div className="avatar-username">
+          <Avatar src={profile.avatar} />
           <h2>{profile.username}</h2>
         </div>
-        <button className='profile-button' onClick={handleEditNameVisible}>Edit</button>
-        <form className='name-form' onSubmit={handleProfileChange}>
-          { visibleNameForm &&              
-              <div className='username-avatar-change'> 
-                {/* Upload Photo<br/>
+        <button className="profile-button" onClick={handleEditNameVisible}>
+          Edit
+        </button>
+        <form className="name-form" onSubmit={handleProfileChange}>
+          {visibleNameForm && (
+            <div className="username-avatar-change">
+              {/* Upload Photo<br/>
                 <input type='file' onChange={e => setProfile({ ... profile, avatar:e.target.files })} /><br/> */}
-                Edit Username <br/>
-                <input value={profile.username} onChange={e => setProfile({ ...profile, username: e.target.value })}></input><br/>
-                <button onClick={handleProfileChange}>Submit</button><br/>
-              </div>
-          }          
+              Edit Username <br />
+              <input
+                value={profile.username}
+                onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+              ></input>
+              <br />
+              <button onClick={handleProfileChange}>Submit</button>
+              <br />
+            </div>
+          )}
         </form>
-        <div className='filters-div'>
-          <div className='current-filters'>
+        <div className="filters-div">
+          <div className="current-filters">
             <label>Zip Code: {filters.zip_code}</label>
             <label>Low Price: ${filters.low_price.toLocaleString('en-US')}</label>
             <label>High Price: ${filters.high_price.toLocaleString('en-US')}</label>
-            <button onClick={handleFilterVisible}>Filters</button><br/>
-            <br/>
+            <button onClick={handleFilterVisible}>Filters</button>
+            <br />
+            <br />
           </div>
-          <br/>
-          <div className='filter-form-container'>
-            { visibleFilter && 
+          <br />
+          <div className="filter-form-container">
+            {visibleFilter && (
               <form onSubmit={handleFilterChange}>
-                <div className='filter-form'> 
+                <div className="filter-form">
                   <label>
-                Zip Code 
-                    <input className='zip-code-input' value={filters.zip_code} onChange={e => setFilters({ ...filters, zip_code: e.target.value })}></input>
+                    Zip Code
+                    <input
+                      className="zip-code-input"
+                      value={filters.zip_code}
+                      onChange={(e) => setFilters({ ...filters, zip_code: e.target.value })}
+                    ></input>
                   </label>
                   <label>
-                Minimum Price 
-                    <input className='min-price-input'value={filters.low_price} onChange={e => setFilters({ ...filters, low_price: e.target.value })}></input>
+                    Minimum Price
+                    <input
+                      className="min-price-input"
+                      value={filters.low_price}
+                      onChange={(e) => setFilters({ ...filters, low_price: e.target.value })}
+                    ></input>
                   </label>
                   <label>
-                High Price 
-                    <input className='max-price-input'value={filters.high_price} onChange={e => setFilters({ ...filters, high_price: e.target.value })}></input>
+                    High Price
+                    <input
+                      className="max-price-input"
+                      value={filters.high_price}
+                      onChange={(e) => setFilters({ ...filters, high_price: e.target.value })}
+                    ></input>
                   </label>
                   <button onClick={handleFilterChange}>Update</button>
                 </div>
-              </form>            
-            }
-            
+              </form>
+            )}
           </div>
         </div>
       </div>
       <div>
-        <Carousel
-          responsive={responsive}>
-        
-          {savedHomes.map((savedHome) => <PropertyCard key={savedHome.id} 
-            savedHomes={savedHomes}  
-            getSavedHomes={getSavedHomes}
-            address={savedHome.address}
-            secondary_address={savedHome.secondary_address}
-            bed={savedHome.bedrooms}
-            bath={savedHome.bathrooms}
-            sqft={savedHome.square_feet}
-            listprice={savedHome.list_price}
-            image={savedHome.primary_photo}
-            id={savedHome.property_id}/>
-          )
-          }
+        <Carousel responsive={responsive}>
+          {savedHomes.map((savedHome) => (
+            <PropertyCard
+              key={savedHome.id}
+              savedHomes={savedHomes}
+              getSavedHomes={getSavedHomes}
+              address={savedHome.address}
+              secondary_address={savedHome.secondary_address}
+              bed={savedHome.bedrooms}
+              bath={savedHome.bathrooms}
+              sqft={savedHome.square_feet}
+              listprice={savedHome.list_price}
+              image={savedHome.primary_photo}
+              id={savedHome.property_id}
+            />
+          ))}
         </Carousel>
       </div>
     </div>
