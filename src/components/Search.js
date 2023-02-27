@@ -67,7 +67,7 @@ export default function Search() {
 
   //take the zip code value and geoCode for the map and to get the city and state to pass into the call
   async function mapZipCode() {
-    const { data } = await geoCode(userPrefs.zip_code);
+    const data = await geoCode(userPrefs.zip_code);
     setZipCodeData({
       lat: data.features[0].center[1],
       lon: data.features[0].center[0],
@@ -118,13 +118,14 @@ export default function Search() {
     //function to get home data based on user passed in preferences
     async function getHomeData() {
       setIsLoading(true);
-      const data = await getAllHomes(
-        userPrefs.zip_code,
-        zipCodeData.city,
+      const { data } = await getAllHomes(
         zipCodeData.state_code,
+        zipCodeData.city,
+        userPrefs.zip_code,
         userPrefs.high_price,
         userPrefs.low_price
       );
+
       if (data.home_search) {
         setHomes(data.home_search.results);
       }
