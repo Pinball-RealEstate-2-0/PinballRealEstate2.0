@@ -1,9 +1,4 @@
 export async function getAllHomes(state_code, city, zip_code, price_max, price_min) {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-  };
   try {
     const response = await fetch(
       `https://us-real-estate.p.rapidapi.com/v2/for-sale?limit=20&state_code=${state_code}&city=${city}&location=${zip_code}&price_min=${price_min}&price_max=${price_max}`,
@@ -44,8 +39,24 @@ export async function geoCode(zip_code) {
 }
 
 export async function getSingleHome(property_id) {
-  const response = await fetch(`/.netlify/functions/property?property_id=${property_id}`);
-  const { data } = await response.json();
+  try {
+    const response = await fetch(
+      `https://us-real-estate.p.rapidapi.com/v2/property-detail?property_id=${property_id}`,
+      {
+        headers: {
+          'X-RapidAPI-Host': 'us-real-estate.p.rapidapi.com',
+          'X-RapidAPI-Key': '2267bfc3f6mshc7ab2de9afac30bp1e4ce6jsn09240aaa0016',
+        },
+      }
+    );
 
-  return data;
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.log(error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed fetching data' }),
+    };
+  }
 }
