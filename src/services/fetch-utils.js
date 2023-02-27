@@ -14,6 +14,7 @@ export async function getAllHomes(state_code, city, zip_code, price_max, price_m
 
     return data;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
     return {
       statusCode: 500,
@@ -53,6 +54,7 @@ export async function getSingleHome(property_id) {
     const data = await response.json();
     return data.data;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
     return {
       statusCode: 500,
