@@ -8,7 +8,6 @@ const headers = {
 };
 
 exports.handler = async (event) => {
-  console.log(event, 'geocode event');
   try {
     const response = await fetch(
       `https://api.mapbox.com/geocoding/v5/mapbox.places/${event.queryStringParameters.zip_code}.json?country=US&limit=1&types=postcode&access_token=${process.env.MAPBOX_KEY}`

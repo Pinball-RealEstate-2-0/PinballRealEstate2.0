@@ -32,8 +32,10 @@ export async function getProfileByID(id) {
 }
 
 export async function getFilters() {
+  const user = await getUser();
+  const profile = await getProfileByID(user.id);
   try {
-    const { body } = await client.from('filters').select('*').single();
+    const { body } = await client.from('filters').select('*').match({ profile_id: profile.id });
     return body;
   } catch (e) {
     // eslint-disable-next-line

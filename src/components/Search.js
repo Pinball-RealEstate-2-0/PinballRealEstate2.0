@@ -22,7 +22,7 @@ export default function Search() {
     city: '',
     state_code: '',
   });
-  const [zipCodeInForm, setZipCodeInForm] = useState(0);
+  const [zipCodeInForm, setZipCodeInForm] = useState(98144);
   const [homes, setHomes] = useState([]);
   const [savedHomes, setSavedHomes] = useState([]);
   // makes the carousel responsive to different screen sizes
@@ -82,7 +82,7 @@ export default function Search() {
     e.preventDefault();
     setUserPrefs({
       ...userPrefs,
-      zip_code: Number(zipCodeInForm),
+      zip_code: String(zipCodeInForm),
       high_price: priceRange.high_price,
       low_price: priceRange.low_price,
     });
