@@ -22,7 +22,7 @@ export default function Search() {
     city: '',
     state_code: '',
   });
-  const [zipCodeInForm, setZipCodeInForm] = useState(98144);
+  const [zipCodeInForm, setZipCodeInForm] = useState(0);
   const [homes, setHomes] = useState([]);
   const [savedHomes, setSavedHomes] = useState([]);
   // makes the carousel responsive to different screen sizes
@@ -92,7 +92,7 @@ export default function Search() {
     await updateFilter(userPrefs);
   }
 
-  //on load of the page get user preferences and saved homes
+  // on load of the page get user preferences and saved homes
   useEffect(() => {
     getInfoOnLoad();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,7 +152,7 @@ export default function Search() {
               type="number"
               min="00000"
               max="99999"
-              value={zipCodeInForm}
+              value={userPrefs.zip_code}
               onChange={(e) => setZipCodeInForm(e.target.value)}
             ></input>
           </label>
