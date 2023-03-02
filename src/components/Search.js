@@ -82,7 +82,7 @@ export default function Search() {
     e.preventDefault();
     setUserPrefs({
       ...userPrefs,
-      zip_code: Number(zipCodeInForm),
+      zip_code: String(zipCodeInForm),
       high_price: priceRange.high_price,
       low_price: priceRange.low_price,
     });
@@ -92,7 +92,7 @@ export default function Search() {
     await updateFilter(userPrefs);
   }
 
-  //on load of the page get user preferences and saved homes
+  // on load of the page get user preferences and saved homes
   useEffect(() => {
     getInfoOnLoad();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,7 +152,7 @@ export default function Search() {
               type="number"
               min="00000"
               max="99999"
-              value={zipCodeInForm}
+              value={userPrefs.zip_code}
               onChange={(e) => setZipCodeInForm(e.target.value)}
             ></input>
           </label>
