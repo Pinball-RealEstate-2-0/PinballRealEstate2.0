@@ -33,7 +33,7 @@ export async function getAllHomes(state_code, city, zip_code, price_max, price_m
 
 export async function geoCode(zip_code) {
   const response = await fetch(
-    `https://api.mapbox.com/geocoding/v5/mapbox.places/${zip_code}.json?country=US&limit=1&types=postcode&access_token=${process.env.MAPBOX_KEY}`
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${zip_code}.json?country=US&limit=1&types=postcode&access_token=pk.eyJ1IjoiYmVsbGlvdHQxNSIsImEiOiJjbGVuOTRsajEwY3dmM3ZwNmZ1NW5qdmc4In0.2ZL23EsquT5qYFF4dNHQOA`
   );
   const data = await response.json();
   return data;
