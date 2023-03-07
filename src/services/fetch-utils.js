@@ -33,7 +33,7 @@ export async function getAllHomes(state_code, city, zip_code, price_max, price_m
 
 export async function geoCode(zip_code) {
   const response = await fetch(
-    `https://api.mapbox.com/geocoding/v5/mapbox.places/${zip_code}.json?country=US&limit=1&types=postcode&access_token=pk.eyJ1IjoiYmVsbGlvdHQxNSIsImEiOiJjbGVuOTRsajEwY3dmM3ZwNmZ1NW5qdmc4In0.2ZL23EsquT5qYFF4dNHQOA`
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${zip_code}.json?country=US&limit=1&types=postcode&access_token=${process.env.MAPBOX_KEY}`
   );
   const data = await response.json();
   return data;
@@ -46,7 +46,7 @@ export async function getSingleHome(property_id) {
       {
         headers: {
           'X-RapidAPI-Host': 'us-real-estate.p.rapidapi.com',
-          'X-RapidAPI-Key': '2267bfc3f6mshc7ab2de9afac30bp1e4ce6jsn09240aaa0016',
+          'X-RapidAPI-Key': process.env.REAL_ESTATE_KEY,
         },
       }
     );
